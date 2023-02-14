@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic Tac Toe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <!-- <link rel="stylesheet" href="Style.css"> -->
+    <style>
+        /* General styles */
+*{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+    font-family: 'Dynapuff', cursive;
+}
+body{
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(107, 104, 252);
+    
+}
+
+/* Selection styles   */
+
+.selection{
+    padding: 50px 80px;
+    border-radius: 20px;
+    background: #f9f9f9;
+    text-align: center;
+    box-shadow: 6px 4px 20px rgba(0,0,0,.1),
+                inset 6px 4px 12px rgba(0,0,0,.2);    
+}
+
+.selection h2{
+    color: rgb(107, 104, 252);
+    font-size: 3rem;
+    font-weight: 600;
+    font-variant: small-caps;
+}
+
+.selection p{
+    color: #222;
+    font-size: 1.5rem;
+    font-weight: 500;
+    font-variant: small-caps;
+    margin-top: 30px;
+}
+
+.selection .players{
+    width: 100%;
+    margin-top: 8px;
+}
+.selection .players .player{
+    cursor: pointer;
+    color:  rgb(107, 104, 252);
+    width: 5.5rem;
+    height: 4rem;
+    margin: 0.4px;
+    font-size: 2rem;
+    border-radius: 4px;
+    border: 3px solid  rgb(107, 104, 252);
+    transition: .4s;
+}
+.selection .players .player:hover{
+    color: #fff;
+    background: rgb(107, 104, 252);   
+}
+
+/* Fade out & fade in animation */
+
+.fadeOut{
+    animation: hide .3s linear alternate;
+}
+
+@keyframes hide{
+    from{
+        opacity:1;
+        transform: scale(1);
+    }
+    to{
+        opacity:0;
+        transform: scale(0);
+    }
+}
+
+
+
+.fadeIn{
+    animation: show .3s linear alternate;
+}
+
+@keyframes show{
+    
+    from{
+        opacity:0;
+        transform: scale(0);
+    }
+    to{
+        opacity:1;
+        transform: scale(1);
+    }
+    
+}
+
+/* Playboard style  */
+
+.play-board{
+    display: none;
+    padding: 30px;
+    border-radius: 20px;
+    background: #f9f9f9;
+    text-align: center;
+    box-shadow: 6px 4px 20px rgba(0,0,0,.1),
+                inset 6px 4px 12px rgba(0,0,0,.2);    
+}
+table td {
+    width: 3em;
+    height: 3em;
+    font-size: 2em;
+    text-align: center;
+    background:  rgb(194, 193, 243); 
+    border: 2px solid #f9f9f9;
+    border-radius: 8pkp;
+    cursor: pointer;
+    transition: .4s linear;
+}
+
+
+/* Reset btton style  */
+
+.reset{
+    cursor: pointer;
+    color:  rgb(107, 104, 252);
+    padding: 8px 18px;
+    margin-top: 30px;
+    font-size: 1.5rem;
+    border-radius: 5px;
+    border: 3px solid rgb(107, 104, 252);
+    transition: .4s;
+}
+.reset:hover{
+    color : #fff;
+    background: #6b68fc;
+}
+/* winner section  */
+
+.winner{
+    /* display: none; */
+    display: none;
+    padding: 40px 50px;
+    border-radius: 10px;
+    background: #f9f9f9;
+    text-align: center;
+    box-shadow: 6px 4px 20px rgba(0,0,0,.1),
+                inset 6px 4px 12px rgba(0,0,0,.2);    
+}
+    </style>
+  </head>
+  <body>
+   
+    <!-- player selection  -->
+    <div class="selection">
+        <h2>Tic Tac Toe</h2>
+        <p>Select your Player</p>
+        <div class="players">
+            <button
+                class="player"
+                onclick="playerSelect('X')"
+            >
+                X
+            </button>
+            <button
+                class="player"
+                onclick="playerSelect('O')"
+            >
+                O
+        </button>
+        </div>
+    </div>
+
+    <!-- playing board -->
+    <div class="play-board">
+        <table>
+            <tr>
+                <td class="cell" id="0"></td>
+                <td class="cell" id="1" ></td>
+                <td class="cell" id="2"></td>
+            </tr>
+            <tr>
+                <td class="cell" id="3"></td>
+                <td class="cell" id="4" ></td>
+                <td class="cell" id="5"></td>
+            </tr>
+            <tr>
+                <td class="cell" id="6"></td>
+                <td class="cell" id="7" ></td>
+                <td class="cell" id="8"></td>
+            </tr>
+        </table>
+
+        <!-- reset button  -->
+        <button class="reset" onclick="startGame()">
+            Reset
+        </button>
+    </div>   
+
+    <!-- winner declare part  -->
+    <div class="winner">
+
+        <h3></h3>
+        <button class="reset" onclick="startGame()">
+            Play Again
+        </button>
+
+    </div>
+    <!-- <script src="Script.js" type="text/javascript"></script> -->
+    <script>
+        const selection = document.querySelector(".selection");
+const playBoard = document.querySelector(".play-board");
+const winner = document.querySelector(".winner");
+
+let gameBoard,
+  user = "X",
+  computer = "O";
+const cells = document.querySelectorAll(".cell");
+const winCombos = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 4, 8],
+  [6, 4, 2],
+  [2, 5, 8],
+  [1, 4, 7],
+  [0, 3, 6],
+];
+
+const playerSelect = (player) => {
+  user = player;
+  computer = player === "X" ? "O" : "X";
+
+  gameBoard = Array.from(Array(9).keys());
+
+  for (let cell of cells) {
+    cell.addEventListener("click", handleClick, false);
+  }
+
+  if (computer === "X") {
+    turn(bestSpot(), computer);
+  }
+
+  selection.classList.add("fadeOut");
+  setTimeout(() => {
+    selection.style.display = "none";
+  }, 290);
+
+  playBoard.classList.add("fadeIn");
+  setTimeout(() => {
+    playBoard.style.display = "block";
+  }, 290);
+};
+
+const startGame = () => {
+  winner.classList.remove("fadeIn");
+  winner.classList.add("fadeOut");
+  setTimeout(() => {
+    winner.style.display = "none";
+  }, 290);
+
+  playBoard.classList.remove("fadeIn");
+  playBoard.classList.add("fadeOut");
+  setTimeout(() => {
+    playBoard.style.display = "none";
+  }, 290);
+
+  selection.classList.add("fadeIn");
+  setTimeout(() => {
+    selection.style.display = "block";
+  }, 290);
+
+  for (let cell of cells) {
+    cell.innerHTML = "";
+    cell.style.color = "#000";
+    cell.style.background = "rgb(194, 193, 243)";
+  }
+};
+
+startGame();
+
+const handleClick = (gameSpace) => {
+  if (typeof gameBoard[gameSpace.target.id] === "number") {
+    turn(gameSpace.target.id, user);
+    if (!checkWin(gameBoard, user) && !checkTie()) {
+      setTimeout(() => {
+        turn(bestSpot(), computer);
+      }, 500);
+    }
+  }
+};
+
+const turn = (spaceId, player) => {
+  gameBoard[spaceId] = player;
+  document.getElementById(spaceId).innerHTML = player;
+
+  let gameWon = checkWin(gameBoard, player);
+  if (gameWon) {
+    gameOver(gameWon);
+  }
+
+  checkTie();
+};
+
+const checkWin = (board, player) => {
+  let spaces = board.reduce(
+    (acc, ele, idx) => (ele === player ? acc.concat(idx) : acc),
+    []
+  );
+  let gameWon = null;
+
+  for (let [index, winComboSpaces] of winCombos.entries()) {
+    if (winComboSpaces.every((elem) => spaces.indexOf(elem) > -1)) {
+      gameWon = { index: index, player: player };
+      break;
+    }
+  }
+
+  return gameWon;
+};
+
+const gameOver = (gameWon) => {
+  for (let index of winCombos[gameWon.index]) {
+    document.getElementById(index).style.color = "#FFF";
+    document.getElementById(index).style.backgroundColor = "#6b68fc";
+  }
+
+  for (let cell of cells) {
+    cell.removeEventListener("click", handleClick, false);
+  }
+
+  declareWinner(
+    gameWon.player === user ? "You Won The Game!" : "Noob! I Won The Game!"
+  );
+};
+
+const declareWinner = (message) => {
+  winner.querySelector("h3").innerHTML = message;
+
+  setTimeout(() => {
+    playBoard.classList.remove("fadeIn");
+    playBoard.classList.add("fadeOut");
+    setTimeout(() => {
+      playBoard.style.display = "none";
+    }, 290);
+
+    winner.classList.add("fadeIn");
+    setTimeout(() => {
+      winner.style.display = "block";
+    }, 290);
+  }, 1500);
+};
+
+const bestSpot = () => {
+  return minMax(gameBoard, computer).index;
+};
+
+const emptySquares = () => {
+  return gameBoard.filter((elm, i) => i === elm);
+};
+
+const checkTie = () => {
+  if (emptySquares().length === 0) {
+    selection.classList.remove("fadeOut");
+
+    for (let cell of cells) {
+      cell.style.backgroundColor = "#6b68fc";
+      cell.removeEventListener("click", handleClick, false);
+    }
+
+    declareWinner("The Game Is Tie!");
+    return true;
+  }
+
+  return false;
+};
+
+const minMax = (testBoard, player) => {
+  let openSpaces = emptySquares(testBoard);
+
+  if (checkWin(testBoard, user)) return { score: -10 };
+  else if (checkWin(testBoard, computer)) return { score: 10 };
+  else if (openSpaces.length === 0) return { score: 0 };
+
+  let moves = [];
+
+  for (let i = 0; i < openSpaces.length; i++) {
+    let move = {};
+    move.index = testBoard[openSpaces[i]];
+    testBoard[openSpaces[i]] = player;
+
+    if (player === computer) move.score = minMax(testBoard, user).score;
+    else move.score = minMax(testBoard, computer).score;
+
+    testBoard[openSpaces[i]] = move.index;
+
+    if (
+      (player === computer && move.score === 10) ||
+      (player === user && move.score === -10)
+    )
+      return move;
+    else moves.push(move);
+  }
+
+  let bestMove, bestScore;
+
+  if (player === computer) {
+    bestScore = -1000;
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score > bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
+      }
+    }
+  } else {
+    bestScore = 1000;
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score < bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
+      }
+    }
+  }
+
+  return moves[bestMove];
+};
+
+
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+<html>
+<h3>ContentType Property<h3>
+    <%
+    response.ContentType="application/vnd.ms-excel"
+    %>
+    <body>
+        <table>
+            <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+            </tr>
+            <tr>
+                <td>Tarun</td>
+                <td>Arshil</td>
+                <td>Vaibhav</td>
+                <td>Sanket</td>
+            </tr>
+        </table>
+    </body>
+</html>

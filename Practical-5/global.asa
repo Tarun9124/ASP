@@ -1,0 +1,15 @@
+<html>
+    <body>
+        <h1><u>Events Of Application Object</u></h1>
+        <h3>Application_onStart Event</h3>
+        sub Application_onStart
+        Application.lock
+        Application("Visitors") = Application("Visitors") + 1
+        Application.unlock
+        End sub
+        <h3>Application_onEnd Event</h3>
+        sub Application_onEnd
+        Application("Visitors") = Application("Visitors")
+        End sub
+    </body>
+</html>

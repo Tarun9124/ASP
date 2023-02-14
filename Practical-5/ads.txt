@@ -1,0 +1,14 @@
+REDIRECT AdRotator.asp
+WIDTH 468
+HEIGHT 60
+BORDER 0
+*
+ad1.jpeg
+https://www.w3schools.com
+Free Tutorials from
+W3Schools
+50
+ad2.jpeg
+https://www.altova.com
+XML Editor from Altova
+50
